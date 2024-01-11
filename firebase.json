@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "peliskulas-app",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

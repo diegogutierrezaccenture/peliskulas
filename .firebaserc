@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "peliskulas-app": {
+      "hosting": {
+        "peliskulas-app": [
+          "peliskulas-app"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "peliskulas-app"
+  }
+}

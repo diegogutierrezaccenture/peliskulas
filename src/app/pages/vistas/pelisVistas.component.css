@@ -1,0 +1,104 @@
+mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    font-weight: lighter;
+}
+
+.searchBar {
+    text-align: center;
+    margin: 40px;
+}
+
+.searchBar input {
+    width: 250px;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 11px;
+    border: 1px solid #FFD740;
+    font-size: 14px;
+}
+
+.searchBar button {
+    border-radius: 4px;
+    margin: 10px;
+    padding: 11px;
+    cursor: pointer;
+    background-color: #FFD740;
+    border: none;
+    font-size: 14px;
+}
+
+.contenidorPelis {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.movie-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 13px;
+    text-align: center;
+    width: 300px;
+    height: 650px;
+    margin: 33px;
+    overflow: hidden;
+}
+
+.movie-card img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: -1px 1px 10px rgba(0, 0, 0, 0.23);
+}
+
+.text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    margin-bottom: 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+}
+
+h3 {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 15px;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    font-size: 13px;
+}

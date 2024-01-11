@@ -1,1 +1,58 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.form h1 {
+    margin-bottom: 30px;
+}
+
+.form__container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form hr {
+    margin: 30px 0;
+}
+
+.form mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form .mdc-button {
+    width: 100%;
+}
+
+.form .small-text {
+    font-size: 14px;
+    display: block;
+    text-align: center;
+}
+
+.form .small-text.providers {
+    margin-bottom: 30px;
+}
+
+.form .small-text.log-in-redirect {
+    margin-top: 30px;
+}
+
+.form .small-text.log-in-redirect a {
+    color: var(--green);
+    text-decoration: underline;
+    cursor: pointer;
+}

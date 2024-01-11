@@ -1,0 +1,112 @@
+<mat-toolbar color="accent">
+    <!-- Barra de navegación del header -->
+    <nav>
+        <ul>
+            <li>
+                <a routerLink="">
+                    <button mat-icon-button color="white">
+                        <mat-icon>home</mat-icon>
+                    </button>
+                </a>
+            </li>
+
+            <li>
+                <a routerLink="/inicio/pendientes">
+                    <button mat-icon-button color="white">
+                        <mat-icon>watch_later</mat-icon>
+                    </button>
+                </a>
+            </li>
+
+            <li>
+                <a routerLink="/inicio/vistas">
+                    <button mat-icon-button color="white">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                </a>
+            </li>
+
+            <li>
+                <a routerLink="/inicio/favs">
+                    <button mat-icon-button color="white">
+                        <mat-icon>favorite</mat-icon>
+                    </button>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <button mat-flat-button mat-button (click)="logOut()">Cerrar sesión</button>
+</mat-toolbar>
+
+<!-- Barra de busqueda -->
+<div class="searchBar">
+    <form (submit)="search()">
+        <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
+        <button mat-flat-button type="submit">Buscar</button>
+    </form>
+</div>
+
+<!-- Contenido de las diferentes pantallas -->
+<router-outlet></router-outlet>
+
+<!-- Si se está situado en la ruta de inicio, se muestra el home -->
+<div *ngIf="router.url === '/inicio'">
+
+    <!-- Mostrar resultado de la búsqueda -->
+    <div *ngIf="searchResults.length > 0">
+        <h2>Resultados de la búsqueda:</h2>
+        <div class="contenidorPelis">
+            <div *ngFor="let movie of searchResults">
+                <div class="movie-card">
+                    <div class="contenedorImg">
+                        <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
+                    </div>
+                    <div class="contenidoCarta">
+                        <h3>{{ movie.title }}</h3>
+                        <div class="text">{{ movie.overview }}</div>
+                    </div>
+                    <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>watch_later</mat-icon>
+                    </button>
+                    <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>favorite</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mostrar películas populares -->
+    <div *ngIf="searchResults.length === 0 && popularMovies.length > 0">
+        <h2>Películas Populares</h2>
+        <div class="contenidorPelis">
+            <div *ngFor="let movie of popularMovies">
+                <div class="movie-card">
+                    <div class="contenedorImg">
+                        <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
+                    </div>
+                    <div class="contenidoCarta">
+                        <h3>{{ movie.title }}</h3>
+                        <div class="text">{{ movie.overview }}</div>
+                    </div>
+                    <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>watch_later</mat-icon>
+                    </button>
+                    <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
+                        <mat-icon>favorite</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; Diego Gutiérrez González</p>
+</footer>
