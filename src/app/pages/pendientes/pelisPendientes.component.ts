@@ -47,4 +47,14 @@ export default class pelisPendientesComponent implements OnInit {
       }
     });
   }
+
+  eliminarPeliPendiente(movie: any) {
+    this.movieService.removeFromPelisPendientesDB(this.userId, movie)
+      .then((filteredList) => {
+        this.listaPelisPendientes = filteredList;
+      })
+      .catch((error) => {
+        console.error('Error al eliminar película pendiente:', error);
+      });
+  }
 }

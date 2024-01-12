@@ -13,8 +13,8 @@
                     <h3>{{ movie.title }}</h3>
                     <div class="text">{{ movie.overview }}</div>
                 </div>
-                <button mat-icon-button color="white">
-                    <mat-icon>watch_later</mat-icon>
+                <button (click)="eliminarPeliFav(movie)" mat-icon-button color="white">
+                    <mat-icon>cancel</mat-icon>
                 </button>
             </div>
         </div>

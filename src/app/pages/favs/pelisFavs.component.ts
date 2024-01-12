@@ -47,4 +47,14 @@ export default class pelisFavsComponent implements OnInit {
       }
     });
   }
+
+  eliminarPeliFav(movie: any) {
+    this.movieService.removeFromPelisFavoritasDB(this.userId, movie)
+      .then((filteredList) => {
+        this.listaPelisFavs = filteredList;
+      })
+      .catch((error) => {
+        console.error('Error al eliminar película favorita:', error);
+      });
+  }
 }

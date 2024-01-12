@@ -47,4 +47,13 @@ export default class pelisVistasComponent implements OnInit {
       }
     });
   }
+
+  eliminarPeliVista(movie: any) {
+    this.movieService.removeFromPelisVistasDB(this.userId, movie)
+    .then((filteredList) => {
+      this.listaPelisVistas = filteredList;
+    })
+    .catch((error) => {
+      console.error('Error al eliminar película vista:', error);
+    });  }
 }
