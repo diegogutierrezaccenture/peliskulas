@@ -27,6 +27,14 @@ nav a {
     margin-left: 20px;
 }
 
+.buttonHeader {
+    color: black;
+}
+
+.active button {
+    color: white;
+}
+
 .searchBar {
     text-align: center;
     margin: 40px;

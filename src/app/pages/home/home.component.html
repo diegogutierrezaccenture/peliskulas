@@ -3,32 +3,32 @@
     <nav>
         <ul>
             <li>
-                <a routerLink="">
-                    <button mat-icon-button color="white">
+                <a routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <button class="buttonHeader" mat-icon-button color="white">
                         <mat-icon>home</mat-icon>
                     </button>
                 </a>
             </li>
 
             <li>
-                <a routerLink="/inicio/pendientes">
-                    <button mat-icon-button color="white">
+                <a routerLink="/inicio/pendientes" routerLinkActive="active">
+                    <button class="buttonHeader" mat-icon-button color="white">
                         <mat-icon>watch_later</mat-icon>
                     </button>
                 </a>
             </li>
 
             <li>
-                <a routerLink="/inicio/vistas">
-                    <button mat-icon-button color="white">
+                <a routerLink="/inicio/vistas" routerLinkActive="active">
+                    <button class="buttonHeader" mat-icon-button color="white">
                         <mat-icon>visibility</mat-icon>
                     </button>
                 </a>
             </li>
 
             <li>
-                <a routerLink="/inicio/favs">
-                    <button mat-icon-button color="white">
+                <a routerLink="/inicio/favs" routerLinkActive="active">
+                    <button class="buttonHeader" mat-icon-button color="white">
                         <mat-icon>favorite</mat-icon>
                     </button>
                 </a>
