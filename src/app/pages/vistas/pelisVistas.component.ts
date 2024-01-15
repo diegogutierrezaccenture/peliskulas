@@ -5,9 +5,11 @@ import { AuthService } from "../../core/services/auth.service";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
+import { MatDialog } from '@angular/material/dialog';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -23,6 +25,7 @@ export default class pelisVistasComponent implements OnInit {
   constructor(private tmdbService: TmdbService,
     private movieService: MovieService,
     public authService: AuthService,
+    public dialog: MatDialog
   ) { }
 
   user$ = this.authService.user$;
@@ -50,10 +53,24 @@ export default class pelisVistasComponent implements OnInit {
 
   eliminarPeliVista(movie: any) {
     this.movieService.removeFromPelisVistasDB(this.userId, movie)
-    .then((filteredList) => {
-      this.listaPelisVistas = filteredList;
-    })
-    .catch((error) => {
-      console.error('Error al eliminar película vista:', error);
-    });  }
+      .then((filteredList) => {
+        this.listaPelisVistas = filteredList;
+      })
+      .catch((error) => {
+        console.error('Error al eliminar película vista:', error);
+      });
+  }
+
+  confirmDelete(movie: any): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista Vistas?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eliminarPeliVista(movie);
+      }
+    });
+  }
 }

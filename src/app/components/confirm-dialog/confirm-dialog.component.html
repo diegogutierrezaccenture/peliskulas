@@ -1,0 +1,8 @@
+<div class="contenedorPrincipal">
+    <h1 mat-dialog-title>Eliminar película</h1>
+    <div mat-dialog-content>{{ data.message }}</div>
+    <div mat-dialog-actions>
+        <button mat-flat-button (click)="onNoClick()" mat-dialog-close>No</button>
+        <button mat-flat-button class="okButton" (click)="onYesClick()" mat-dialog-close cdkFocusInitial>Ok</button>
+    </div>
+</div>

@@ -27,42 +27,49 @@ export class MovieService {
   }
 
   // Añadir pelicula a la BD
-  async addPelisPendientesDB(userId: any, peli: string): Promise<void> {
-    await this.addMovieToCategory(userId, 'pelisPendientes', peli);
+  async addPelisPendientesDB(userId: any, peli: string): Promise<boolean> {
+    return await this.addMovieToCategory(userId, 'pelisPendientes', peli);
   }
 
-  async addPelisVistasDB(userId: any, peli: string): Promise<void> {
-    await this.addMovieToCategory(userId, 'pelisVistas', peli);
+  async addPelisVistasDB(userId: any, peli: string): Promise<boolean> {
+    return await this.addMovieToCategory(userId, 'pelisVistas', peli);
   }
 
-  async addPelisFavoritasDB(userId: any, peli: string): Promise<void> {
-    await this.addMovieToCategory(userId, 'pelisFavs', peli);
+  async addPelisFavoritasDB(userId: any, peli: string): Promise<boolean> {
+    return await this.addMovieToCategory(userId, 'pelisFavs', peli);
   }
 
-  private async addMovieToCategory(userId: any, category: string, peli: any): Promise<void> {
+  private async addMovieToCategory(userId: any, category: string, peli: any): Promise<boolean> {
     const userRef = ref(this.database, 'users/' + userId);
 
-    // Obtener los datos actuales del usuario
-    const userData = (await get(userRef)).val() || {};
+    try {
+      // Obtener los datos actuales del usuario
+      const userData = (await get(userRef)).val() || {};
 
-    // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
-    const currentList = userData[category] || [];
+      // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
+      const currentList = userData[category] || [];
 
-    // Verificar si la película ya está en la lista (comparación basada en un campo único, como 'id')
-    const isMovieAlreadyAdded = currentList.some((item: any) => item.id === peli.id);
+      // Verificar si la película ya está en la lista (comparación basada en un campo único, como 'id')
+      const isMovieAlreadyAdded = currentList.some((item: any) => item.id === peli.id);
 
-    if (!isMovieAlreadyAdded) {
-      // Agregar la nueva película a la lista
-      currentList.push(peli);
+      if (!isMovieAlreadyAdded) {
+        // Agregar la nueva película a la lista
+        currentList.push(peli);
 
-      // Modificar solo la categoría relevante
-      userData[category] = currentList;
+        // Modificar solo la categoría relevante
+        userData[category] = currentList;
 
-      // Actualizar la base de datos con los datos modificados
-      set(userRef, userData);
+        // Actualizar la base de datos con los datos modificados
+        await set(userRef, userData);
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Error al agregar la película a la categoría:", error);
+      return false;
     }
-    else
-      alert('Esta pelicula ya está en ' + category.replace('pelis', ''))
   }
 
   // Eliminar pelicula de la BD

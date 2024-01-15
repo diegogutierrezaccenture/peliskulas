@@ -1,13 +1,15 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { AuthService } from "../../core/services/auth.service";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
+import { MatDialog } from '@angular/material/dialog';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -23,6 +25,7 @@ export default class pelisFavsComponent implements OnInit {
   constructor(private tmdbService: TmdbService,
     private movieService: MovieService,
     public authService: AuthService,
+    public dialog: MatDialog
   ) { }
 
   user$ = this.authService.user$;
@@ -56,5 +59,18 @@ export default class pelisFavsComponent implements OnInit {
       .catch((error) => {
         console.error('Error al eliminar película favorita:', error);
       });
+  }
+
+  confirmDelete(movie: any): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista Favoritas?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eliminarPeliFav(movie);
+      }
+    });
   }
 }
