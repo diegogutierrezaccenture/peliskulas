@@ -23,6 +23,10 @@ export class MovieService {
     const pelisVistas = userData.pelisVistas || [];
     const pelisFavs = userData.pelisFavs || [];
 
+    pelisPendientes.reverse();
+    pelisVistas.reverse();
+    pelisFavs.reverse();
+
     return { pelisPendientes, pelisVistas, pelisFavs };
   }
 

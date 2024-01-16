@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { AuthService } from "../../core/services/auth.service";
@@ -82,6 +82,10 @@ export default class HomeComponent implements OnInit {
 
   search(): void {
     this.tmdbService.searchMovies(this.searchQuery).subscribe((data) => {
+      
+      if(data.results.length === 0)
+        this.openSnackBarPeliNoEncontrada();
+
       this.searchResults = data.results;
     });
   }
@@ -126,7 +130,15 @@ export default class HomeComponent implements OnInit {
   }
 
   openSnackBarError() {
-    return this._snackBar.open('Esta película ya ha sido añadida anteriormente😅', 'Cerrar', {
+    return this._snackBar.open('Esta película ya ha sido añadida anteriormente🥴', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
+    });
+  }
+
+  openSnackBarPeliNoEncontrada() {
+    return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
       duration: 2500,
       verticalPosition: 'top',
       horizontalPosition: 'end',

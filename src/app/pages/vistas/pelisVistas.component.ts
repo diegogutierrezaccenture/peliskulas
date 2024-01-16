@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
@@ -25,7 +26,8 @@ export default class pelisVistasComponent implements OnInit {
   constructor(private tmdbService: TmdbService,
     private movieService: MovieService,
     public authService: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) { }
 
   user$ = this.authService.user$;
@@ -51,6 +53,14 @@ export default class pelisVistasComponent implements OnInit {
     });
   }
 
+  searchQuery: string = '';
+  searchResults: any[] = [];
+  searchPendientes() {
+    this.searchResults = this.listaPelisVistas.filter(movie => movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
+    if (this.searchResults.length === 0)
+      this.openSnackBarPeliNoEncontrada();
+  }
+
   eliminarPeliVista(movie: any) {
     this.movieService.removeFromPelisVistasDB(this.userId, movie)
       .then((filteredList) => {
@@ -71,6 +81,14 @@ export default class pelisVistasComponent implements OnInit {
       if (result) {
         this.eliminarPeliVista(movie);
       }
+    });
+  }
+
+  openSnackBarPeliNoEncontrada() {
+    return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
     });
   }
 }

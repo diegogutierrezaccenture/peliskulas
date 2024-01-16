@@ -1,8 +1,35 @@
 <link href="../home/home.component.css" rel="stylesheet">
 
+<!-- Barra de busqueda -->
+<div class="searchBar">
+    <form (submit)="searchPendientes()">
+        <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar entre tus películas Pendeintes">
+        <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
+    </form>
+</div>
+
 <h2>Películas Pendientes</h2>
 
-<div *ngIf="listaPelisPendientes.length > 0">
+<div *ngIf="searchResults.length > 0">
+    <div class="contenidorPelis">
+        <div *ngFor="let movie of searchResults">
+            <div class="movie-card">
+                <div class="contenedorImg">
+                    <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
+                </div>
+                <div class="contenidoCarta">
+                    <h3>{{ movie.title }}</h3>
+                    <div class="text">{{ movie.overview }}</div>
+                </div>
+                <button (click)="confirmDelete(movie)" mat-icon-button color="white">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="searchResults.length === 0 && listaPelisPendientes.length > 0">
     <div class="contenidorPelis">
         <div *ngFor="let movie of listaPelisPendientes">
             <div class="movie-card">
@@ -19,4 +46,8 @@
             </div>
         </div>
     </div>
+</div>
+
+<div *ngIf="listaPelisPendientes.length === 0" class="sinPeliculasAñadidas">
+    <p class="textSinPeliculas">No has añadido ninguna película todavia.</p>
 </div>
