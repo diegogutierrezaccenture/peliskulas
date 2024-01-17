@@ -43,7 +43,7 @@ export class MovieService {
     return await this.addMovieToCategory(userId, 'pelisFavs', peli);
   }
 
-  private async addMovieToCategory(userId: any, category: string, peli: any): Promise<boolean> {
+  public async addMovieToCategory(userId: any, category: string, peli: any): Promise<boolean> {
     const userRef = ref(this.database, 'users/' + userId);
 
     try {
@@ -89,26 +89,31 @@ export class MovieService {
     return await this.removeMovieFromCategory(userId, 'pelisFavs', peli);
   }
 
-  private async removeMovieFromCategory(userId: any, category: string, peli: any): Promise<any[]> {
+  public async removeMovieFromCategory(userId: any, category: string, movieToRemove: any): Promise<any[]> {
     const userRef = ref(this.database, 'users/' + userId);
 
-    // Obtener los datos actuales del usuario
-    const userData = (await get(userRef)).val() || {};
+    try {
+      // Obtener los datos actuales del usuario
+      const userData = (await get(userRef)).val() || {};
 
-    // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
-    const currentList = userData[category] || [];
+      // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
+      const currentList = userData[category] || [];
 
-    // Filtrar todos los elementos que no sean iguales a peli mediante comparación profunda
-    const filteredList = currentList.filter((item: any) => !isEqual(item, peli));
+      // Actualizar la lista eliminando la película
+      const updatedList = currentList.filter((movie: any) => movie.id !== movieToRemove.id);
 
-    // Modificar solo la categoría relevante
-    userData[category] = filteredList;
+      // Modificar solo la categoría relevante
+      userData[category] = updatedList;
 
-    // Actualizar la base de datos con los datos modificados
-    set(userRef, userData);
+      // Actualizar la base de datos con los datos modificados
+      await set(userRef, userData);
 
-    // Devolver la lista filtrada
-    return filteredList;
+      // Devolver la lista actualizada
+      return updatedList;
+    } catch (error) {
+      console.error("Error al eliminar la película de la categoría:", error);
+      return [];
+    }
   }
 
 }
