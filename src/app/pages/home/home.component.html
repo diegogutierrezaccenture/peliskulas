@@ -46,6 +46,7 @@
 <div *ngIf="router.url === '/inicio'">
 
     <!-- Barra de busqueda -->
+<<<<<<< HEAD
 <div class="searchBar">
     <form (submit)="search()">
         <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
@@ -59,6 +60,21 @@
         <div class="contenidorPelis">
             <div *ngFor="let movie of searchResults">
                 <div class="movie-card">
+=======
+    <div class="searchBar">
+        <form (submit)="search()">
+            <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
+            <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <!-- Mostrar resultados de la búsqueda o películas populares -->
+    <div *ngIf="(searchResults.length > 0 || popularMovies.length > 0)">
+        <h2>{{ searchResults.length > 0 ? 'Resultados de la búsqueda:' : 'Películas Populares' }}</h2>
+        <div class="contenedorDeTodasLasPelis">
+            <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : popularMovies)">
+                <div class="cartaDePeli">
+>>>>>>> f5ef997608c053e13fc5aa39f9ccd6948fd9156b
                     <div class="contenedorImg">
                         <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
                     </div>
@@ -67,45 +83,34 @@
                         <div class="text">{{ movie.overview }}</div>
                     </div>
                     <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>watch_later</mat-icon>
+                        <ng-container *ngIf="existeEnListaPendientes(movie); else iconoSecundario">
+                            <mat-icon color="accent">watch_later</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario>
+                            <mat-icon>watch_later</mat-icon>
+                        </ng-template>
                     </button>
                     <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>visibility</mat-icon>
+                        <ng-container *ngIf="existeEnListaVistas(movie); else iconoSecundario2">
+                            <mat-icon style="color: rgb(0, 133, 255);">visibility</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario2>
+                            <mat-icon>visibility</mat-icon>
+                        </ng-template>
                     </button>
                     <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>favorite</mat-icon>
+                        <ng-container *ngIf="existeEnListaFavoritas(movie); else iconoSecundario3">
+                            <mat-icon style="color: red;">favorite</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario3>
+                            <mat-icon>favorite</mat-icon>
+                        </ng-template>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Mostrar películas populares -->
-    <div *ngIf="searchResults.length === 0 && popularMovies.length > 0">
-        <h2>Películas Populares</h2>
-        <div class="contenidorPelis">
-            <div *ngFor="let movie of popularMovies">
-                <div class="movie-card">
-                    <div class="contenedorImg">
-                        <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
-                    </div>
-                    <div class="contenidoCarta">
-                        <h3>{{ movie.title }}</h3>
-                        <div class="text">{{ movie.overview }}</div>
-                    </div>
-                    <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>watch_later</mat-icon>
-                    </button>
-                    <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>visibility</mat-icon>
-                    </button>
-                    <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>favorite</mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <footer>

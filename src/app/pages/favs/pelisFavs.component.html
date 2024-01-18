@@ -3,13 +3,19 @@
 <!-- Barra de busqueda -->
 <div class="searchBar">
     <form (submit)="searchPendientes()">
+<<<<<<< HEAD
         <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar entre tus películas Favoritas">
+=======
+        <input type="text" [(ngModel)]="searchQuery" name="searchQuery"
+            placeholder="Buscar entre tus películas Favoritas">
+>>>>>>> f5ef997608c053e13fc5aa39f9ccd6948fd9156b
         <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
     </form>
 </div>
 
 <h2>Películas Favoritas</h2>
 
+<<<<<<< HEAD
 <div *ngIf="searchResults.length > 0">
     <div class="contenidorPelis">
         <div *ngFor="let movie of searchResults">
@@ -33,6 +39,13 @@
     <div class="contenidorPelis">
         <div *ngFor="let movie of listaPelisFavs">
             <div class="movie-card">
+=======
+<!-- Mostrar resultados de la búsqueda o películas favoritas -->
+<div *ngIf="(searchResults.length > 0 || listaPelisFavs.length > 0)">
+    <div class="contenedorDeTodasLasPelis">
+        <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : listaPelisFavs)">
+            <div class="cartaDePeli">
+>>>>>>> f5ef997608c053e13fc5aa39f9ccd6948fd9156b
                 <div class="contenedorImg">
                     <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
                 </div>

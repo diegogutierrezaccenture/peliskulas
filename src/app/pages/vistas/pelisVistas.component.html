@@ -10,6 +10,7 @@
 
 <h2>Películas Vistas</h2>
 
+<<<<<<< HEAD
 <div *ngIf="searchResults.length > 0">
     <div class="contenidorPelis">
         <div *ngFor="let movie of searchResults">
@@ -33,6 +34,13 @@
     <div class="contenidorPelis">
         <div *ngFor="let movie of listaPelisVistas">
             <div class="movie-card">
+=======
+<!-- Mostrar resultados de la búsqueda o películas vistas -->
+<div *ngIf="(searchResults.length > 0 || listaPelisVistas.length > 0)">
+    <div class="contenedorDeTodasLasPelis">
+        <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : listaPelisVistas)">
+            <div class="cartaDePeli">
+>>>>>>> f5ef997608c053e13fc5aa39f9ccd6948fd9156b
                 <div class="contenedorImg">
                     <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
                 </div>
