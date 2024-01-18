@@ -5,9 +5,12 @@ import { AuthService } from "../../core/services/auth.service";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
+import { MatDialog } from '@angular/material/dialog';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   standalone: true,
@@ -23,6 +26,8 @@ export default class pelisPendientesComponent implements OnInit {
   constructor(private tmdbService: TmdbService,
     private movieService: MovieService,
     public authService: AuthService,
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) { }
 
   user$ = this.authService.user$;
@@ -45,6 +50,46 @@ export default class pelisPendientesComponent implements OnInit {
           console.error('Error al obtener listas del usuario:', error);
         }
       }
+    });
+  }
+
+  searchQuery: string = '';
+  searchResults: any[] = [];
+
+  searchPendientes() {
+    this.searchResults = this.listaPelisPendientes.filter(movie => movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
+    if(this.searchResults.length === 0)
+      this.openSnackBarPeliNoEncontrada();
+  }
+
+  eliminarPeliPendiente(movie: any) {
+    this.movieService.removeFromPelisPendientesDB(this.userId, movie)
+      .then((filteredList) => {
+        this.listaPelisPendientes = filteredList;
+      })
+      .catch((error) => {
+        console.error('Error al eliminar película pendiente:', error);
+      });
+  }
+
+  confirmDelete(movie: any): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista Pendientes?` },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eliminarPeliPendiente(movie);
+      }
+    });
+  }
+
+  openSnackBarPeliNoEncontrada() {
+    return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
     });
   }
 }

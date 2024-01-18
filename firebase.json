@@ -1,9 +1,10 @@
 {
-  "hosting": [
-    {
-      "target": "peliskulas-app",
-      "source": ".",
-      "frameworksBackend": {}
-    }
-  ]
+  "hosting": {
+    "public": "dist/peliskulas-app/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
 }

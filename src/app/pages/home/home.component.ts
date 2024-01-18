@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 
 @Component({
   standalone: true,
@@ -21,6 +22,7 @@ import { MovieService } from '../../core/services/movie.service';
   imports: [MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatSnackBarModule,
     FormsModule,
     CommonModule,
     RouterModule,
@@ -33,7 +35,8 @@ export default class HomeComponent implements OnInit {
     private tmdbService: TmdbService,
     private movieService: MovieService,
     public authService: AuthService,
-    public router: Router
+    public router: Router,
+    private _snackBar: MatSnackBar
   ) { }
 
   async logOut(): Promise<void> {
@@ -66,14 +69,10 @@ export default class HomeComponent implements OnInit {
     this.user$.subscribe(async (user) => {
       if (user) {
         this.userId = user.uid;
-        console.log("UID del usuario:", this.userId);
 
         // Obtener todas las listas de películas del usuario
         try {
           const userLists = await this.movieService.getListsByUserId(this.userId);
-          console.log('Películas Pendientes:', userLists.pelisPendientes);
-          console.log('Películas Vistas:', userLists.pelisVistas);
-          console.log('Películas Favoritas:', userLists.pelisFavs);
         } catch (error) {
           console.error('Error al obtener listas del usuario:', error);
         }
@@ -83,19 +82,66 @@ export default class HomeComponent implements OnInit {
 
   search(): void {
     this.tmdbService.searchMovies(this.searchQuery).subscribe((data) => {
+      
+      if(data.results.length === 0)
+        this.openSnackBarPeliNoEncontrada();
+
       this.searchResults = data.results;
     });
   }
 
-  addPeliPendienteToDB(movie: any): void {
-    this.movieService.addPelisPendientesDB(this.userId, movie);
+  async addPeliPendienteToDB(movie: any): Promise<void> {
+    const resultado = await this.movieService.addPelisPendientesDB(this.userId, movie);
+
+    if (resultado) {
+      this.openSnackBarOK();
+    }
+    else
+      this.openSnackBarError()
   }
 
-  addPeliVistaToDB(movie: any): void {
-    this.movieService.addPelisVistasDB(this.userId, movie);
+
+  async addPeliVistaToDB(movie: any): Promise<void> {
+    const resultado = await this.movieService.addPelisVistasDB(this.userId, movie);
+
+    if (resultado) {
+      this.openSnackBarOK();
+    }
+    else
+      this.openSnackBarError()
   }
 
-  addPeliFavToDB(movie: any): void {
-    this.movieService.addPelisFavoritasDB(this.userId, movie);
+  async addPeliFavToDB(movie: any): Promise<void> {
+    const resultado = await this.movieService.addPelisFavoritasDB(this.userId, movie);
+
+    if (resultado) {
+      this.openSnackBarOK();
+    }
+    else
+      this.openSnackBarError()
+  }
+
+  openSnackBarOK() {
+    return this._snackBar.open('Película añadida con éxito😀', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
+    });
+  }
+
+  openSnackBarError() {
+    return this._snackBar.open('Esta película ya ha sido añadida anteriormente🥴', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
+    });
+  }
+
+  openSnackBarPeliNoEncontrada() {
+    return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
+      duration: 2500,
+      verticalPosition: 'top',
+      horizontalPosition: 'end',
+    });
   }
 }
