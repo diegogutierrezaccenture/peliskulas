@@ -4,10 +4,12 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { AuthService } from "../../core/services/auth.service";
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
@@ -26,6 +28,7 @@ import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
     FormsModule,
     CommonModule,
     RouterModule,
+    ReactiveFormsModule
   ]
 })
 
@@ -36,7 +39,7 @@ export default class HomeComponent implements OnInit {
     private movieService: MovieService,
     public authService: AuthService,
     public router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
   ) { }
 
   async logOut(): Promise<void> {
@@ -50,10 +53,9 @@ export default class HomeComponent implements OnInit {
 
   public user$: Observable<User | null> | undefined;
   public userId: any;
+  searchControl = new FormControl();
 
   popularMovies: any[] = [];
-  searchQuery: string = '';
-  searchResults: any[] = [];
 
   listaPelisPendientes: any[] = [];
 
@@ -70,6 +72,14 @@ export default class HomeComponent implements OnInit {
       if (user) {
         this.userId = user.uid;
 
+        this.searchControl.valueChanges
+          .pipe(
+            debounceTime(1000),
+            distinctUntilChanged()
+          )
+          .subscribe(() => {
+            this.search(false);
+          });
         // Obtener todas las listas de películas del usuario
         try {
           const userLists = await this.movieService.getListsByUserId(this.userId);
@@ -80,10 +90,13 @@ export default class HomeComponent implements OnInit {
     });
   }
 
-  search(): void {
-    this.tmdbService.searchMovies(this.searchQuery).subscribe((data) => {
-      
-      if(data.results.length === 0)
+  searchQuery: string = '';
+  searchResults: any[] = [];
+
+  search(buttonClick: boolean): void {
+    this.tmdbService.searchMovies(this.searchControl.value).subscribe((data) => {
+
+      if (data.results.length === 0 && buttonClick)
         this.openSnackBarPeliNoEncontrada();
 
       this.searchResults = data.results;

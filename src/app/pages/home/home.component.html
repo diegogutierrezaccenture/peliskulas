@@ -47,8 +47,8 @@
 
     <!-- Barra de busqueda -->
     <div class="searchBar">
-        <form (submit)="search()">
-            <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
+        <form (submit)="search(true)">
+            <input type="text" [formControl]="searchControl" name="searchQuery" placeholder="Buscar películas">
             <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
         </form>
     </div>

@@ -1,0 +1,12 @@
+<div class="cartaDePeli">
+    <div class="contenedorImg">
+        <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
+    </div>
+    <div class="contenidoCarta">
+        <h3>{{ movie.title }}</h3>
+        <div class="text">{{ movie.overview }}</div>
+    </div>
+    <button (click)="confirmDelete()" mat-icon-button color="white">
+        <!-- <mat-icon>cancel</mat-icon> -->
+    </button>
+</div>

@@ -23,10 +23,6 @@ export class MovieService {
     const pelisVistas = userData.pelisVistas || [];
     const pelisFavs = userData.pelisFavs || [];
 
-    pelisPendientes.reverse();
-    pelisVistas.reverse();
-    pelisFavs.reverse();
-
     return { pelisPendientes, pelisVistas, pelisFavs };
   }
 
@@ -58,7 +54,7 @@ export class MovieService {
 
       if (!isMovieAlreadyAdded) {
         // Agregar la nueva película a la lista
-        currentList.push(peli);
+        currentList.unshift(peli);
 
         // Modificar solo la categoría relevante
         userData[category] = currentList;

@@ -81,6 +81,11 @@ mat-toolbar {
 }
 
 /* Contenedor de la imagen */
+.contenedorImg {
+    height: 413px;
+}
+
+
 .contenedorImg img {
     max-width: 100%;
     height: auto;
