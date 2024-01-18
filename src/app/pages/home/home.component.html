@@ -67,13 +67,28 @@
                         <div class="text">{{ movie.overview }}</div>
                     </div>
                     <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>watch_later</mat-icon>
+                        <ng-container *ngIf="existeEnListaPendientes(movie); else iconoSecundario">
+                            <mat-icon color="accent">watch_later</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario>
+                            <mat-icon>watch_later</mat-icon>
+                        </ng-template>
                     </button>
                     <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>visibility</mat-icon>
+                        <ng-container *ngIf="existeEnListaVistas(movie); else iconoSecundario2">
+                            <mat-icon style="color: rgb(0, 133, 255);">visibility</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario2>
+                            <mat-icon>visibility</mat-icon>
+                        </ng-template>
                     </button>
                     <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>favorite</mat-icon>
+                        <ng-container *ngIf="existeEnListaFavoritas(movie); else iconoSecundario3">
+                            <mat-icon style="color: red;">favorite</mat-icon>
+                        </ng-container>
+                        <ng-template #iconoSecundario3>
+                            <mat-icon>favorite</mat-icon>
+                        </ng-template>
                     </button>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { getDatabase, ref, get, set } from "firebase/database";
+import { getDatabase, ref, get, set, onValue } from "firebase/database";
 import { isEqual } from 'lodash';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,37 @@ import { isEqual } from 'lodash';
 export class MovieService {
 
   database = getDatabase();
+
+  // BehaviorSubject para emitir eventos cuando cambian las listas de películas
+  private pelisPendientesSubject = new BehaviorSubject<any[]>([]);
+  private pelisVistasSubject = new BehaviorSubject<any[]>([]);
+  private pelisFavsSubject = new BehaviorSubject<any[]>([]);
+
+  // Obtener las películas pendientes como un observable
+  public pelisPendientes$ = this.pelisPendientesSubject.asObservable();
+  public pelisVistas$ = this.pelisVistasSubject.asObservable();
+  public pelisFavs$ = this.pelisFavsSubject.asObservable();
+
+  subscribeToUserMovieLists(userId: any): void {
+    const userRef = ref(this.database, 'users/' + userId);
+
+    // Utilizar onValue para obtener datos iniciales y suscribirse a cambios
+    onValue(userRef, (snapshot) => {
+      const userData = snapshot.val() || {};
+
+      const pelisPendientes = userData.pelisPendientes || [];
+      const pelisVistas = userData.pelisVistas || [];
+      const pelisFavs = userData.pelisFavs || [];
+
+      pelisPendientes.reverse();
+      pelisVistas.reverse();
+      pelisFavs.reverse();
+
+      this.pelisPendientesSubject.next(pelisPendientes);
+      this.pelisVistasSubject.next(pelisVistas);
+      this.pelisFavsSubject.next(pelisFavs);
+    });
+  }
 
   // Obtener las peliculas pendientes, vistas y favoritas de un usuario
   async getListsByUserId(userId: any): Promise<{ pelisPendientes: any[], pelisVistas: any[], pelisFavs: any[] }> {
@@ -43,7 +75,7 @@ export class MovieService {
     return await this.addMovieToCategory(userId, 'pelisFavs', peli);
   }
 
-  private async addMovieToCategory(userId: any, category: string, peli: any): Promise<boolean> {
+  public async addMovieToCategory(userId: any, category: string, peli: any): Promise<boolean> {
     const userRef = ref(this.database, 'users/' + userId);
 
     try {
@@ -89,26 +121,31 @@ export class MovieService {
     return await this.removeMovieFromCategory(userId, 'pelisFavs', peli);
   }
 
-  private async removeMovieFromCategory(userId: any, category: string, peli: any): Promise<any[]> {
+  public async removeMovieFromCategory(userId: any, category: string, movieToRemove: any): Promise<any[]> {
     const userRef = ref(this.database, 'users/' + userId);
 
-    // Obtener los datos actuales del usuario
-    const userData = (await get(userRef)).val() || {};
+    try {
+      // Obtener los datos actuales del usuario
+      const userData = (await get(userRef)).val() || {};
 
-    // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
-    const currentList = userData[category] || [];
+      // Obtener la lista actual de la categoría (o inicializarla si es la primera vez)
+      const currentList = userData[category] || [];
 
-    // Filtrar todos los elementos que no sean iguales a peli mediante comparación profunda
-    const filteredList = currentList.filter((item: any) => !isEqual(item, peli));
+      // Actualizar la lista eliminando la película
+      const updatedList = currentList.filter((movie: any) => movie.id !== movieToRemove.id);
 
-    // Modificar solo la categoría relevante
-    userData[category] = filteredList;
+      // Modificar solo la categoría relevante
+      userData[category] = updatedList;
 
-    // Actualizar la base de datos con los datos modificados
-    set(userRef, userData);
+      // Actualizar la base de datos con los datos modificados
+      await set(userRef, userData);
 
-    // Devolver la lista filtrada
-    return filteredList;
+      // Devolver la lista actualizada
+      return updatedList;
+    } catch (error) {
+      console.error("Error al eliminar la película de la categoría:", error);
+      return [];
+    }
   }
 
 }
