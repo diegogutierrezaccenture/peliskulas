@@ -1,6 +1,7 @@
 body {
-    height: 100%;
+    width: 100%;
     margin: 0;
+    padding: 0;
 }
 
 mat-toolbar {
@@ -61,38 +62,42 @@ mat-toolbar {
     font-size: 14px;
 }
 
-.contenidorPelis {
+/* Contenedor principal */
+.contenedorDeTodasLasPelis {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.movie-card {
+/* Carta de cada película */
+.cartaDePeli {
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 13px;
+    padding: 15px;
     text-align: center;
-    width: 300px;
-    height: fit-content;
-    margin: 33px;
-    overflow: hidden;
+    width: 250px;
+    margin: 25px;
+    min-height: 300px;
 }
 
-.contenedorImg {
-    height: 450px;
-    margin-bottom: 20px;
-}
-
-.movie-card img {
+/* Contenedor de la imagen */
+.contenedorImg img {
     max-width: 100%;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    box-shadow: -1px 1px 10px rgba(0, 0, 0, 0.23);
+    height: auto;
+    border-radius: 6px;
 }
 
+/* Contenido de la carta */
 .contenidoCarta {
-    height: 150px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    height: fit-content;
+    margin-bottom: 10px;
+}
+
+/* Botones de acción */
+.mat-icon-button {
+    margin-top: 10px;
+    color: white;
 }
 
 .text {
@@ -100,9 +105,6 @@ mat-toolbar {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: justify;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
 }
 
 h2 {
@@ -114,6 +116,7 @@ h3 {
     text-align: center;
     font-size: 17px;
     font-weight: bold;
+    height: 50px;
 }
 
 p {

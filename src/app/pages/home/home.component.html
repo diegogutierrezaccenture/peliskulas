@@ -46,19 +46,19 @@
 <div *ngIf="router.url === '/inicio'">
 
     <!-- Barra de busqueda -->
-<div class="searchBar">
-    <form (submit)="search()">
-        <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
-        <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
-    </form>
-</div>
+    <div class="searchBar">
+        <form (submit)="search()">
+            <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar películas">
+            <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
+        </form>
+    </div>
 
-    <!-- Mostrar resultado de la búsqueda -->
-    <div *ngIf="searchResults.length > 0">
-        <h2>Resultados de la búsqueda:</h2>
-        <div class="contenidorPelis">
-            <div *ngFor="let movie of searchResults">
-                <div class="movie-card">
+    <!-- Mostrar resultados de la búsqueda o películas populares -->
+    <div *ngIf="(searchResults.length > 0 || popularMovies.length > 0)">
+        <h2>{{ searchResults.length > 0 ? 'Resultados de la búsqueda:' : 'Películas Populares' }}</h2>
+        <div class="contenedorDeTodasLasPelis">
+            <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : popularMovies)">
+                <div class="cartaDePeli">
                     <div class="contenedorImg">
                         <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
                     </div>
@@ -80,32 +80,6 @@
         </div>
     </div>
 
-    <!-- Mostrar películas populares -->
-    <div *ngIf="searchResults.length === 0 && popularMovies.length > 0">
-        <h2>Películas Populares</h2>
-        <div class="contenidorPelis">
-            <div *ngFor="let movie of popularMovies">
-                <div class="movie-card">
-                    <div class="contenedorImg">
-                        <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
-                    </div>
-                    <div class="contenidoCarta">
-                        <h3>{{ movie.title }}</h3>
-                        <div class="text">{{ movie.overview }}</div>
-                    </div>
-                    <button (click)="addPeliPendienteToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>watch_later</mat-icon>
-                    </button>
-                    <button (click)="addPeliVistaToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>visibility</mat-icon>
-                    </button>
-                    <button (click)="addPeliFavToDB(movie)" mat-icon-button color="white">
-                        <mat-icon>favorite</mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <footer>
