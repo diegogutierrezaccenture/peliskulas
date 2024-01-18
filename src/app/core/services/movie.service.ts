@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { getDatabase, ref, get, set } from "firebase/database";
+import { getDatabase, ref, get, set, onValue } from "firebase/database";
 import { isEqual } from 'lodash';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,37 @@ import { isEqual } from 'lodash';
 export class MovieService {
 
   database = getDatabase();
+
+  // BehaviorSubject para emitir eventos cuando cambian las listas de películas
+  private pelisPendientesSubject = new BehaviorSubject<any[]>([]);
+  private pelisVistasSubject = new BehaviorSubject<any[]>([]);
+  private pelisFavsSubject = new BehaviorSubject<any[]>([]);
+
+  // Obtener las películas pendientes como un observable
+  public pelisPendientes$ = this.pelisPendientesSubject.asObservable();
+  public pelisVistas$ = this.pelisVistasSubject.asObservable();
+  public pelisFavs$ = this.pelisFavsSubject.asObservable();
+
+  subscribeToUserMovieLists(userId: any): void {
+    const userRef = ref(this.database, 'users/' + userId);
+
+    // Utilizar onValue para obtener datos iniciales y suscribirse a cambios
+    onValue(userRef, (snapshot) => {
+      const userData = snapshot.val() || {};
+
+      const pelisPendientes = userData.pelisPendientes || [];
+      const pelisVistas = userData.pelisVistas || [];
+      const pelisFavs = userData.pelisFavs || [];
+
+      pelisPendientes.reverse();
+      pelisVistas.reverse();
+      pelisFavs.reverse();
+
+      this.pelisPendientesSubject.next(pelisPendientes);
+      this.pelisVistasSubject.next(pelisVistas);
+      this.pelisFavsSubject.next(pelisFavs);
+    });
+  }
 
   // Obtener las peliculas pendientes, vistas y favoritas de un usuario
   async getListsByUserId(userId: any): Promise<{ pelisPendientes: any[], pelisVistas: any[], pelisFavs: any[] }> {

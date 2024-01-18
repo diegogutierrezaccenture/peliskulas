@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { AuthService } from "../../core/services/auth.service";
@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
-import { ChangeDetectorRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
@@ -32,7 +32,7 @@ import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-
   ]
 })
 
-export default class HomeComponent implements OnInit {
+export default class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private tmdbService: TmdbService,
@@ -42,6 +42,13 @@ export default class HomeComponent implements OnInit {
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
   ) { }
+
+  private subscriptions: Subscription[] = [];
+
+  ngOnDestroy() {
+    // Desuscribirse de todas las suscripciones al destruir el componente
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
   async logOut(): Promise<void> {
     try {
@@ -59,7 +66,7 @@ export default class HomeComponent implements OnInit {
   searchQuery: string = '';
   searchResults: any[] = [];
 
-  userLists: any;
+  // userLists: any;
   pelisPendientes: any[] = [];
   pelisVistas: any[] = [];
   pelisFavoritas: any[] = [];
@@ -79,10 +86,20 @@ export default class HomeComponent implements OnInit {
 
         // Obtener todas las listas de películas del usuario
         try {
-          this.userLists = await this.movieService.getListsByUserId(this.userId);
-          this.pelisPendientes = this.userLists.pelisPendientes;
-          this.pelisVistas = this.userLists.pelisVistas;
-          this.pelisFavoritas = this.userLists.pelisFavoritas;
+          this.movieService.pelisPendientes$.subscribe((pelisPendientes) => {
+            this.pelisPendientes = pelisPendientes;
+            console.log('Pelis Pendientes:', this.pelisPendientes);
+          });
+
+          this.movieService.pelisVistas$.subscribe((pelisVistas) => {
+            this.pelisVistas = pelisVistas;
+            console.log('Pelis Vistas:', this.pelisVistas);
+          });
+
+          this.movieService.pelisFavs$.subscribe((pelisFavoritas) => {
+            this.pelisFavoritas = pelisFavoritas;
+            console.log('Pelis Favoritas:', this.pelisFavoritas);
+          });
         } catch (error) {
           console.error('Error al obtener listas del usuario:', error);
         }
@@ -107,6 +124,7 @@ export default class HomeComponent implements OnInit {
     }
     else {
       try {
+        console.log('Antes de agregar a Pendientes:', this.pelisPendientes);
         // Lógica para agregar la película a la base de datos
         const resultado = await this.movieService.addMovieToCategory(this.userId, 'pelisPendientes', movie);
 
@@ -116,6 +134,7 @@ export default class HomeComponent implements OnInit {
         } else {
           this.openSnackBarError();
         }
+        console.log('Después de agregar a Pendientes:', this.pelisPendientes);
       } catch (error) {
         console.error("Error al agregar la película a la categoría:", error);
         this.openSnackBarError();
@@ -214,24 +233,31 @@ export default class HomeComponent implements OnInit {
 
   // Comprovar las pelis que ya estén en alguna lista
   existeEnListaPendientes(movie: any): boolean {
-    // Verificar si 'userList.pelisPendientes' está definido
+    // Verificar si 'pelisPendientes' está definido
     if (this.pelisPendientes) {
       // Utilizar 'some' para comprobar si hay alguna película en la lista que coincida con 'movie'
-      return this.pelisPendientes.some((pelicula: { id: any; }) => pelicula.id === movie.id);
+      return this.pelisPendientes.some(function (pelicula) {
+        return pelicula.id === movie.id;
+      });
     }
     return false;
   }
 
+
   existeEnListaVistas(movie: any): boolean {
     if (this.pelisVistas) {
-      return this.pelisVistas.some((pelicula: { id: any; }) => pelicula.id === movie.id);
+      return this.pelisVistas.some(function (pelicula) {
+        return pelicula.id === movie.id;
+      });
     }
     return false;
   }
 
   existeEnListaFavoritas(movie: any): boolean {
     if (this.pelisFavoritas) {
-      return this.pelisFavoritas.some((pelicula: { id: any; }) => pelicula.id === movie.id);
+      return this.pelisFavoritas.some(function (pelicula) {
+        return pelicula.id === movie.id;
+      });
     }
     return false;
   }
