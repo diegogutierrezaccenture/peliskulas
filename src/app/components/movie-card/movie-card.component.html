@@ -6,7 +6,7 @@
         <h3>{{ movie.title }}</h3>
         <div class="text">{{ movie.overview }}</div>
     </div>
-    <button (click)="confirmDelete()" mat-icon-button color="white">
-        <!-- <mat-icon>cancel</mat-icon> -->
+    <button (click)="confirmDelete(movie)" mat-icon-button color="white">
+        <mat-icon>cancel</mat-icon>
     </button>
 </div>

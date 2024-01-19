@@ -1,32 +1,27 @@
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { AuthService } from "../../core/services/auth.service";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from "@angular/material/snack-bar";
-
-import { TmdbService } from '../../core/services/tmdb.service';
+import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   standalone: true,
   selector: 'pelisVistas-name',
   templateUrl: './pelisVistas.component.html',
   styleUrls: ['./pelisVistas.component.css'],
-  providers: [TmdbService],
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, FormsModule, CommonModule]
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, FormsModule, CommonModule, MovieCardComponent]
 })
 
 export default class pelisVistasComponent implements OnInit {
 
-  constructor(private tmdbService: TmdbService,
+  constructor(
     private movieService: MovieService,
     public authService: AuthService,
-    public dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) { }
 
@@ -34,6 +29,7 @@ export default class pelisVistasComponent implements OnInit {
   public userId: any;
   public userLists: any;
   listaPelisVistas: any[] = [];
+  categoria: string = 'pelisVistas';
 
   ngOnInit(): void {
     // Obtener UID del usuario
@@ -45,7 +41,6 @@ export default class pelisVistasComponent implements OnInit {
         try {
           this.userLists = await this.movieService.getListsByUserId(this.userId);
           this.listaPelisVistas = this.userLists.pelisVistas;
-
         } catch (error) {
           console.error('Error al obtener listas del usuario:', error);
         }
@@ -53,35 +48,17 @@ export default class pelisVistasComponent implements OnInit {
     });
   }
 
+  obtenerListaPelisActualizada(listaPelisActualizada: any): void {
+    this.listaPelisVistas = listaPelisActualizada;
+  }
+
   searchQuery: string = '';
   searchResults: any[] = [];
-  searchPendientes() {
+
+  searchVistas() {
     this.searchResults = this.listaPelisVistas.filter(movie => movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
     if (this.searchResults.length === 0)
       this.openSnackBarPeliNoEncontrada();
-  }
-
-  eliminarPeliVista(movie: any) {
-    this.movieService.removeFromPelisVistasDB(this.userId, movie)
-      .then((filteredList) => {
-        this.listaPelisVistas = filteredList;
-      })
-      .catch((error) => {
-        console.error('Error al eliminar película vista:', error);
-      });
-  }
-
-  confirmDelete(movie: any): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista Vistas?` },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.eliminarPeliVista(movie);
-      }
-    });
   }
 
   openSnackBarPeliNoEncontrada() {

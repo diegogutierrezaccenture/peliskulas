@@ -73,19 +73,7 @@ export class MovieService {
   }
 
   // Eliminar pelicula de la BD
-  async removeFromPelisPendientesDB(userId: any, peli: string): Promise<any[]> {
-    return await this.removeMovieFromCategory(userId, 'pelisPendientes', peli);
-  }
-
-  async removeFromPelisVistasDB(userId: any, peli: string): Promise<any[]> {
-    return await this.removeMovieFromCategory(userId, 'pelisVistas', peli);
-  }
-
-  async removeFromPelisFavoritasDB(userId: any, peli: string): Promise<any[]> {
-    return await this.removeMovieFromCategory(userId, 'pelisFavs', peli);
-  }
-
-  private async removeMovieFromCategory(userId: any, category: string, peli: any): Promise<any[]> {
+  async removeMovieFromCategory(userId: any, category: string, peli: any): Promise<any[]> {
     const userRef = ref(this.database, 'users/' + userId);
 
     // Obtener los datos actuales del usuario
@@ -104,7 +92,7 @@ export class MovieService {
     set(userRef, userData);
 
     // Devolver la lista filtrada
-    return filteredList;
+    return await filteredList;
   }
 
 }

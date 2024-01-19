@@ -2,7 +2,7 @@
 
 <!-- Barra de busqueda -->
 <div class="searchBar">
-    <form (submit)="searchPendientes()">
+    <form (submit)="searchFavs()">
         <input type="text" [(ngModel)]="searchQuery" name="searchQuery"
             placeholder="Buscar entre tus películas Favoritas">
         <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
@@ -15,18 +15,9 @@
 <div *ngIf="(searchResults.length > 0 || listaPelisFavs.length > 0)">
     <div class="contenedorDeTodasLasPelis">
         <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : listaPelisFavs)">
-            <div class="cartaDePeli">
-                <div class="contenedorImg">
-                    <img [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" alt="{{ movie.title }}">
-                </div>
-                <div class="contenidoCarta">
-                    <h3>{{ movie.title }}</h3>
-                    <div class="text">{{ movie.overview }}</div>
-                </div>
-                <button (click)="confirmDelete(movie)" mat-icon-button color="white">
-                    <mat-icon>cancel</mat-icon>
-                </button>
-            </div>
+            <app-movie-card [movie]="movie" [listaPelis]="listaPelisFavs" [userId]="userId" [categoria]="categoria"
+                (listaPelisActualizada)="obtenerListaPelisActualizada($event)">
+            </app-movie-card>
         </div>
     </div>
 </div>

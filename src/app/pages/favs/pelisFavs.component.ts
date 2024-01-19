@@ -5,11 +5,8 @@ import { AuthService } from "../../core/services/auth.service";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
-import { MatDialog } from '@angular/material/dialog';
-
-import { TmdbService } from '../../core/services/tmdb.service';
+import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
@@ -17,16 +14,14 @@ import { MatSnackBar } from "@angular/material/snack-bar";
   selector: 'pelisFavs-name',
   templateUrl: './pelisFavs.component.html',
   styleUrls: ['./pelisFavs.component.css'],
-  providers: [TmdbService],
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, FormsModule, CommonModule]
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, FormsModule, CommonModule, MovieCardComponent]
 })
 
 export default class pelisFavsComponent implements OnInit {
 
-  constructor(private tmdbService: TmdbService,
+  constructor(
     private movieService: MovieService,
     public authService: AuthService,
-    public dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) { }
 
@@ -34,6 +29,7 @@ export default class pelisFavsComponent implements OnInit {
   public userId: any;
   public userLists: any;
   listaPelisFavs: any[] = [];
+  categoria: string = 'pelisFavs';
 
   ngOnInit(): void {
     // Obtener UID del usuario
@@ -56,33 +52,14 @@ export default class pelisFavsComponent implements OnInit {
   searchQuery: string = '';
   searchResults: any[] = [];
 
-  searchPendientes() {
+  obtenerListaPelisActualizada(listaPelisActualizada: any): void {
+    this.listaPelisFavs = listaPelisActualizada;
+  }
+
+  searchFavs() {
     this.searchResults = this.listaPelisFavs.filter(movie => movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
     if (this.searchResults.length === 0)
       this.openSnackBarPeliNoEncontrada();
-  }
-
-  eliminarPeliFav(movie: any) {
-    this.movieService.removeFromPelisFavoritasDB(this.userId, movie)
-      .then((filteredList) => {
-        this.listaPelisFavs = filteredList;
-      })
-      .catch((error) => {
-        console.error('Error al eliminar película favorita:', error);
-      });
-  }
-
-  confirmDelete(movie: any): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista Favoritas?` },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.eliminarPeliFav(movie);
-      }
-    });
   }
 
   openSnackBarPeliNoEncontrada() {
