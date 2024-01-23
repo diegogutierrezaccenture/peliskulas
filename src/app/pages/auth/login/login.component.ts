@@ -95,9 +95,9 @@ export default class LogInComponent {
 
   openSnackBar() {
     return this._snackBar.open('Inicio de sesión con éxito 😀', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 }

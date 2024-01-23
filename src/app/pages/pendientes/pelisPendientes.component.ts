@@ -8,6 +8,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { FirebaseService } from "../../core/services/firebase.service";
+import { ListasPelis } from "../../core/services/listas.service";
 
 @Component({
   standalone: true,
@@ -20,16 +22,17 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export default class pelisPendientesComponent implements OnInit {
 
   constructor(
-    private movieService: MovieService,
     public authService: AuthService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private listasPelis: ListasPelis
   ) { }
 
   user$ = this.authService.user$;
   public userId: any;
   public userLists: any;
-  listaPelisPendientes: any[] = [];
   categoria: string = 'pelisPendientes';
+
+  listaPelisPendientes: any[] = [];
 
   ngOnInit(): void {
     // Obtener UID del usuario
@@ -39,18 +42,14 @@ export default class pelisPendientesComponent implements OnInit {
 
         // Obtener la lista de películas PENDIENTES del usuario
         try {
-          this.userLists = await this.movieService.getListsByUserId(this.userId);
-          this.listaPelisPendientes = this.userLists.pelisPendientes;
-
+          this.listasPelis.pelisPendientes$.subscribe(data => {
+            this.listaPelisPendientes = data;
+          });
         } catch (error) {
-          console.error('Error al obtener listas del usuario:', error);
+          console.error('Error al obtener pelisPendientes del usuario:', error);
         }
       }
     });
-  }
-
-  obtenerListaPelisActualizada(listaPelisActualizada: any): void {
-    this.listaPelisPendientes = listaPelisActualizada;
   }
 
   searchQuery: string = '';
@@ -64,9 +63,9 @@ export default class pelisPendientesComponent implements OnInit {
 
   openSnackBarPeliNoEncontrada() {
     return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 }

@@ -11,7 +11,7 @@ export class TmdbService {
   constructor(private http: HttpClient) { }
 
   getPopularMovies(): Observable<any> {
-    const url = `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}`;
+    const url = `https://api.themoviedb.org/3/movie/popular?language=es-ES&api_key=${this.apiKey}`;
     return this.http.get(url);
   }
 
@@ -21,7 +21,7 @@ export class TmdbService {
   }
 
   searchMovies(query: string): Observable<any> {
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${query}`;
+    const url = `https://api.themoviedb.org/3/search/movie?language=es-ES&api_key=${this.apiKey}&query=${query}`;
     return this.http.get(url);
   }
 

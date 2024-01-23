@@ -15,8 +15,7 @@
 <div *ngIf="(searchResults.length > 0 || listaPelisFavs.length > 0)">
     <div class="contenedorDeTodasLasPelis">
         <div *ngFor="let movie of (searchResults.length > 0 ? searchResults : listaPelisFavs)">
-            <app-movie-card [movie]="movie" [listaPelis]="listaPelisFavs" [userId]="userId" [categoria]="categoria"
-                (listaPelisActualizada)="obtenerListaPelisActualizada($event)">
+            <app-movie-card [movie]="movie" [listaPelis]="listaPelisFavs" [userId]="userId" [categoria]="categoria">
             </app-movie-card>
         </div>
     </div>

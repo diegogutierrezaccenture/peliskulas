@@ -8,6 +8,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { ListasPelis } from "../../core/services/listas.service";
 
 @Component({
   standalone: true,
@@ -20,9 +21,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export default class pelisFavsComponent implements OnInit {
 
   constructor(
-    private movieService: MovieService,
     public authService: AuthService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private listasPelis: ListasPelis
   ) { }
 
   user$ = this.authService.user$;
@@ -39,11 +40,11 @@ export default class pelisFavsComponent implements OnInit {
 
         // Obtener la lista de películas FAVORITAS del usuario
         try {
-          this.userLists = await this.movieService.getListsByUserId(this.userId);
-          this.listaPelisFavs = this.userLists.pelisFavs;
-
+          this.listasPelis.pelisFavs$.subscribe(data => {
+            this.listaPelisFavs = data;
+          });
         } catch (error) {
-          console.error('Error al obtener listas del usuario:', error);
+          console.error('Error al obtener pelisPendientes del usuario:', error);
         }
       }
     });
@@ -51,10 +52,6 @@ export default class pelisFavsComponent implements OnInit {
 
   searchQuery: string = '';
   searchResults: any[] = [];
-
-  obtenerListaPelisActualizada(listaPelisActualizada: any): void {
-    this.listaPelisFavs = listaPelisActualizada;
-  }
 
   searchFavs() {
     this.searchResults = this.listaPelisFavs.filter(movie => movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
@@ -64,9 +61,9 @@ export default class pelisFavsComponent implements OnInit {
 
   openSnackBarPeliNoEncontrada() {
     return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 }

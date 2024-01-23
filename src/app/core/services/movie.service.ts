@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getDatabase, ref, get, set } from "firebase/database";
+import { getDatabase, ref, get, set, DatabaseReference } from "firebase/database";
 import { isEqual } from 'lodash';
 
 @Injectable({
@@ -12,19 +12,28 @@ export class MovieService {
 
   // Obtener las peliculas pendientes, vistas y favoritas de un usuario
   async getListsByUserId(userId: any): Promise<{ pelisPendientes: any[], pelisVistas: any[], pelisFavs: any[] }> {
-    const userRef = ref(this.database, 'users/' + userId);
+    return new Promise((resolve, reject) => {
+      const userRef = ref(this.database, 'users/' + userId);
 
-    // Obtener los datos actuales del usuario
-    const snapshot = await get(userRef);
-    const userData = snapshot.val() || {};
+      // Adjuntar un oyente asincrónico para cambios en la referencia de usuario
+      onValue(userRef, (snapshot) => {
+        // Obtener los datos actuales del usuario
+        const userData = snapshot.val() || {};
 
-    // Obtener las listas o devolver arrays vacíos si no existen
-    const pelisPendientes = userData.pelisPendientes || [];
-    const pelisVistas = userData.pelisVistas || [];
-    const pelisFavs = userData.pelisFavs || [];
+        // Obtener las listas o devolver arrays vacíos si no existen
+        const pelisPendientes = userData.pelisPendientes || [];
+        const pelisVistas = userData.pelisVistas || [];
+        const pelisFavs = userData.pelisFavs || [];
 
-    return { pelisPendientes, pelisVistas, pelisFavs };
+        // Resolver la promesa con la lista actualizada
+        resolve({ pelisPendientes, pelisVistas, pelisFavs });
+      }, (error) => {
+        // Rechazar la promesa en caso de error
+        reject(error);
+      });
+    });
   }
+
 
   // Añadir pelicula a la BD
   async addPelisPendientesDB(userId: any, peli: string): Promise<boolean> {
@@ -95,4 +104,8 @@ export class MovieService {
     return await filteredList;
   }
 
+}
+
+function onValue(userRef: DatabaseReference, arg1: (snapshot: any) => void, arg2: (error: any) => void) {
+  throw new Error('Function not implemented.');
 }

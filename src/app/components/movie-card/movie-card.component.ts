@@ -12,6 +12,7 @@ import { MatButtonModule } from "@angular/material/button";
   styleUrls: ['./movie-card.component.css'],
   imports: [MatIconModule, MatButtonModule]
 })
+
 export class MovieCardComponent {
   constructor(public dialog: MatDialog,
     private movieService: MovieService,
@@ -31,7 +32,6 @@ export class MovieCardComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(this.categoria)
         this.eliminarPeliPendiente(movie);
       }
     });

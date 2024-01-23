@@ -8,6 +8,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { ListasPelis } from "../../core/services/listas.service";
 
 @Component({
   standalone: true,
@@ -20,9 +21,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export default class pelisVistasComponent implements OnInit {
 
   constructor(
-    private movieService: MovieService,
     public authService: AuthService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private listasPelis: ListasPelis
   ) { }
 
   user$ = this.authService.user$;
@@ -39,17 +40,14 @@ export default class pelisVistasComponent implements OnInit {
 
         // Obtener la lista de películas VISTAS del usuario
         try {
-          this.userLists = await this.movieService.getListsByUserId(this.userId);
-          this.listaPelisVistas = this.userLists.pelisVistas;
+          this.listasPelis.pelisVistas$.subscribe(data => {
+            this.listaPelisVistas = data;
+          });
         } catch (error) {
-          console.error('Error al obtener listas del usuario:', error);
+          console.error('Error al obtener pelisPendientes del usuario:', error);
         }
       }
     });
-  }
-
-  obtenerListaPelisActualizada(listaPelisActualizada: any): void {
-    this.listaPelisVistas = listaPelisActualizada;
   }
 
   searchQuery: string = '';
@@ -63,9 +61,9 @@ export default class pelisVistasComponent implements OnInit {
 
   openSnackBarPeliNoEncontrada() {
     return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 }

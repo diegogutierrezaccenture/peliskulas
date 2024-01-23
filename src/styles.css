@@ -57,3 +57,8 @@ body {
     text-decoration: underline;
     cursor: pointer;
 }
+
+/* Editar el fondo cuando aparece un snakbar */
+/* .cdk-overlay-container {
+    background-color: red;
+} */

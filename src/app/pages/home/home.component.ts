@@ -10,10 +10,13 @@ import { User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
-
 import { TmdbService } from '../../core/services/tmdb.service';
 import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { FirebaseService } from "../../core/services/firebase.service";
+import { ListasPelis } from "../../core/services/listas.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 
 @Component({
   standalone: true,
@@ -40,6 +43,8 @@ export default class HomeComponent implements OnInit {
     public authService: AuthService,
     public router: Router,
     private _snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private listasPelis: ListasPelis
   ) { }
 
   async logOut(): Promise<void> {
@@ -58,6 +63,8 @@ export default class HomeComponent implements OnInit {
   popularMovies: any[] = [];
 
   listaPelisPendientes: any[] = [];
+  listaPelisVistas: any[] = [];
+  listaPelisFavs: any[] = [];
 
   async ngOnInit(): Promise<void> {
     this.tmdbService.getPopularMovies().subscribe((data) => {
@@ -82,7 +89,18 @@ export default class HomeComponent implements OnInit {
           });
         // Obtener todas las listas de películas del usuario
         try {
-          const userLists = await this.movieService.getListsByUserId(this.userId);
+          // Escuchar cambios en las listas a través del servicio listasPelis
+          this.listasPelis.pelisPendientes$.subscribe(data => {
+            this.listaPelisPendientes = data;
+          });
+
+          this.listasPelis.pelisVistas$.subscribe(data => {
+            this.listaPelisVistas = data;
+          });
+
+          this.listasPelis.pelisFavs$.subscribe(data => {
+            this.listaPelisFavs = data;
+          });
         } catch (error) {
           console.error('Error al obtener listas del usuario:', error);
         }
@@ -110,7 +128,7 @@ export default class HomeComponent implements OnInit {
       this.openSnackBarOK();
     }
     else
-      this.openSnackBarError()
+      this.confirmDelete(movie, this.listaPelisPendientes, "pelisPendientes")
   }
 
 
@@ -121,7 +139,7 @@ export default class HomeComponent implements OnInit {
       this.openSnackBarOK();
     }
     else
-      this.openSnackBarError()
+      this.confirmDelete(movie, this.listaPelisVistas, "pelisVistas")
   }
 
   async addPeliFavToDB(movie: any): Promise<void> {
@@ -131,30 +149,44 @@ export default class HomeComponent implements OnInit {
       this.openSnackBarOK();
     }
     else
-      this.openSnackBarError()
+      this.confirmDelete(movie, this.listaPelisFavs, "pelisFavs")
   }
 
+  // Mensaje que se muestra al añadir una peli a una lista
   openSnackBarOK() {
     return this._snackBar.open('Película añadida con éxito😀', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
-    });
-  }
-
-  openSnackBarError() {
-    return this._snackBar.open('Esta película ya ha sido añadida anteriormente🥴', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 
   openSnackBarPeliNoEncontrada() {
     return this._snackBar.open('Película no encontrada😅', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
+
+  // Método para verificar si una película está en la lista
+  isMovieInList(movie: any, lista: any[]): boolean {
+    return lista.some(peli => peli.id === movie.id);
+  }
+
+  confirmDelete(movie: any, listaComparar: any, lista: any): void {
+    if (this.isMovieInList(movie, listaComparar)) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '250px',
+        data: { message: `¿Estás seguro de que quieres eliminar "${movie.title}" de la lista?` },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.movieService.removeMovieFromCategory(this.userId, lista, movie)
+        }
+      });
+    }
+  }
+
 }

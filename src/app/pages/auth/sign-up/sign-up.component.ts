@@ -107,9 +107,9 @@ export default class SignUpComponent {
 
   openSnackBar() {
     return this._snackBar.open('Registro realizado con éxito😀', 'Cerrar', {
-      duration: 2500,
-      verticalPosition: 'top',
-      horizontalPosition: 'end',
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
     });
   }
 }
