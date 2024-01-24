@@ -71,15 +71,15 @@
                         <div class="text">{{ movie.overview }}</div>
                     </div>
                     <button (click)="addPeliPendienteToDB(movie)" mat-icon-button
-                        [style.color]="isMovieInList(movie, listaPelisPendientes) ? '#FFD740' : 'black'">
+                        [style.color]="isMovieInList(movie, listaPelisPendientes) ? '#FFD740' : '#616161'">
                         <mat-icon>watch_later</mat-icon>
                     </button>
                     <button (click)="addPeliVistaToDB(movie)" mat-icon-button
-                        [style.color]="isMovieInList(movie, listaPelisVistas) ? '#00BCD4' : 'black'">
+                        [style.color]="isMovieInList(movie, listaPelisVistas) ? '#00BCD4' : 'gray'">
                         <mat-icon>visibility</mat-icon>
                     </button>
                     <button (click)="addPeliFavToDB(movie)" mat-icon-button
-                        [style.color]="isMovieInList(movie, listaPelisFavs) ? 'red' : 'black'">
+                        [style.color]="isMovieInList(movie, listaPelisFavs) ? 'red' : '#9E9E9E'">
                         <mat-icon>favorite</mat-icon>
                     </button>
 

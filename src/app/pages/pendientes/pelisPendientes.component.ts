@@ -8,8 +8,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
 import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { FirebaseService } from "../../core/services/firebase.service";
 import { ListasPelis } from "../../core/services/listas.service";
+
+// import { MatDialog } from '@angular/material/dialog';
+// import { MovieDetailsComponent } from '../../components/movie-details/movie-details.component';
+// import { MovieModalService } from '../../core/services/movie-modal.service';
 
 @Component({
   standalone: true,
@@ -24,7 +27,7 @@ export default class pelisPendientesComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private _snackBar: MatSnackBar,
-    private listasPelis: ListasPelis
+    private listasPelis: ListasPelis,
   ) { }
 
   user$ = this.authService.user$;

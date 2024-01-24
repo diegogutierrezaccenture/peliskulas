@@ -1,0 +1,9 @@
+<div class="movie-details">
+    <div class="contenedorImg">
+        <img [src]="'https://image.tmdb.org/t/p/original' + movie.poster_path" alt="{{ movie.title }}">
+    </div>
+    <div class="contenido">
+        <h3 class="titulo">{{ movie.title }}</h3>
+        <p class="descripcion">{{ movie.overview }}</p>
+    </div>
+</div>

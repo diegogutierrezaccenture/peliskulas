@@ -1,9 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import { MovieService } from '../../core/services/movie.service';
 import { MatButtonModule } from "@angular/material/button";
+
+import { MatDialog } from '@angular/material/dialog';
+import { MovieDetailsComponent } from '../../components/movie-details/movie-details.component';
+import { MovieModalService } from '../../core/services/movie-modal.service';
 
 @Component({
   standalone: true,
@@ -16,6 +19,7 @@ import { MatButtonModule } from "@angular/material/button";
 export class MovieCardComponent {
   constructor(public dialog: MatDialog,
     private movieService: MovieService,
+    private movieModalService: MovieModalService
   ) { }
 
   @Input() movie: any;
@@ -23,6 +27,14 @@ export class MovieCardComponent {
   @Input() listaPelis: any;
   @Input() categoria: any;
   @Output() listaPelisActualizada: EventEmitter<any> = new EventEmitter();
+
+  openDialog(movie: any) {
+    // Llama al servicio para pasar la información de la película al componente de detalles
+    this.movieModalService.openModal(movie);
+
+    // Abre el componente de detalles utilizando MatDialog
+    const dialogRef = this.dialog.open(MovieDetailsComponent);
+  }
 
   confirmDelete(movie: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

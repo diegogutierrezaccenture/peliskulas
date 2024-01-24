@@ -1,0 +1,8 @@
+.movie-details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    width: 750px;
+    height: 400px;
+}
