@@ -85,7 +85,7 @@ export default class HomeComponent implements OnInit {
             distinctUntilChanged()
           )
           .subscribe(() => {
-            this.search(false);
+            this.search();
           });
         // Obtener todas las listas de películas del usuario
         try {
@@ -111,14 +111,18 @@ export default class HomeComponent implements OnInit {
   searchQuery: string = '';
   searchResults: any[] = [];
 
-  search(buttonClick: boolean): void {
-    this.tmdbService.searchMovies(this.searchControl.value).subscribe((data) => {
+  // Puede que le tenga que poner un buttonClick como parametro
+  search(): void {
+    if (this.searchControl.value) {
+      this.tmdbService.searchMovies(this.searchControl.value).subscribe((data) => {
 
-      if (data.results.length === 0 && buttonClick)
-        this.openSnackBarPeliNoEncontrada();
+        // Y aqui comprovarlo
+        if (data.results.length === 0)
+          this.openSnackBarPeliNoEncontrada();
 
-      this.searchResults = data.results;
-    });
+        this.searchResults = data.results;
+      });
+    }
   }
 
   async addPeliPendienteToDB(movie: any): Promise<void> {

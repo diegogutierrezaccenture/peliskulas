@@ -8,7 +8,7 @@ export class MovieModalService {
   private movieSource = new BehaviorSubject(null);
   currentMovie = this.movieSource.asObservable();
 
-  openModal(movie: any) {
-    this.movieSource.next(movie);
+  openModal(movieDetails: any) {
+    this.movieSource.next(movieDetails);
   }
 }

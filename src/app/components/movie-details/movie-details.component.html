@@ -1,9 +1,25 @@
 <div class="movie-details">
     <div class="contenedorImg">
-        <img [src]="'https://image.tmdb.org/t/p/original' + movie.poster_path" alt="{{ movie.title }}">
+        <img [src]="'https://image.tmdb.org/t/p/original' + movieDetails.poster_path" alt="{{ movieDetails.title }}">
     </div>
     <div class="contenido">
-        <h3 class="titulo">{{ movie.title }}</h3>
-        <p class="descripcion">{{ movie.overview }}</p>
+        <h3 class="titulo">{{ movieDetails.title }} &#40;{{ movieDetails.release_date | date:'yyyy' }}&#41;</h3>
+        <h1 class="tagLine">{{ movieDetails.tagline }}</h1>
+        <p class="descripcion">{{ movieDetails.overview }}</p>
+
+        <p><span><b>Director: </b>{{ movieDetails.mainDirector.name }}</span></p>
+        <p><span><b>Año: </b>{{ movieDetails.release_date | date:'dd-MM-yyyy' }}</span></p>
+
+        <p>
+            <span><b>Géneros: </b>
+                <ng-container *ngIf="movieDetails.genres && movieDetails.genres.length > 0; else noGenres">
+                    <span *ngFor="let genero of movieDetails.genres; let last = last">
+                        {{ genero.name }}{{ !last ? ',' : '' }}
+                    </span>
+                </ng-container>
+                <ng-template #noGenres>No hay información.</ng-template>
+            </span>
+        </p>
     </div>
+
 </div>

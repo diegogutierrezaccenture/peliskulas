@@ -7,6 +7,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsComponent } from '../../components/movie-details/movie-details.component';
 import { MovieModalService } from '../../core/services/movie-modal.service';
+import { TmdbService } from '../../core/services/tmdb.service';
+import { Observable, forkJoin } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -19,7 +21,8 @@ import { MovieModalService } from '../../core/services/movie-modal.service';
 export class MovieCardComponent {
   constructor(public dialog: MatDialog,
     private movieService: MovieService,
-    private movieModalService: MovieModalService
+    private movieModalService: MovieModalService,
+    private tmdbService: TmdbService
   ) { }
 
   @Input() movie: any;
@@ -28,12 +31,35 @@ export class MovieCardComponent {
   @Input() categoria: any;
   @Output() listaPelisActualizada: EventEmitter<any> = new EventEmitter();
 
-  openDialog(movie: any) {
-    // Llama al servicio para pasar la información de la película al componente de detalles
-    this.movieModalService.openModal(movie);
+  movieDetails: any;
 
-    // Abre el componente de detalles utilizando MatDialog
-    const dialogRef = this.dialog.open(MovieDetailsComponent);
+  openDialog(movie: any) {
+    // Realiza ambas llamadas a la API simultáneamente
+    forkJoin([
+      this.obtenerDetallesDePelicula(movie.id),
+      this.obtenerDirector(movie.id)
+    ]).subscribe(
+      ([movieDetails, movieCredits]: [any, any]) => {
+        // Combina los detalles de la película y los créditos en un solo objeto
+        const movieData = { ...movieDetails, mainDirector: movieCredits };
+        // Llama al servicio para pasar la información de la película al componente de detalles
+        this.movieModalService.openModal(movieData);
+
+        // Abre el componente de detalles utilizando MatDialog
+        this.dialog.open(MovieDetailsComponent);
+      },
+      (error: any) => {
+        console.error('Error al obtener detalles de la película:', error);
+      }
+    );
+  }
+
+  obtenerDetallesDePelicula(movieId: number): Observable<any> {
+    return this.tmdbService.getMovieDetails(movieId);
+  }
+
+  obtenerDirector(movieId: number): Observable<any> {
+    return this.tmdbService.getMainDirector(movieId);
   }
 
   confirmDelete(movie: any): void {
@@ -51,11 +77,6 @@ export class MovieCardComponent {
 
   eliminarPeliPendiente(movie: any) {
     this.movieService.removeMovieFromCategory(this.userId, this.categoria, movie)
-      .then((filteredList) => {
-        this.listaPelis = filteredList;
-        // Emite el evento al padre para pasarle la lista actualizada
-        this.listaPelisActualizada.emit(this.listaPelis);
-      })
       .catch((error) => {
         console.error('Error al eliminar película pendiente:', error);
       });

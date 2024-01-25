@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ListasPelis } from "../../core/services/listas.service";
 

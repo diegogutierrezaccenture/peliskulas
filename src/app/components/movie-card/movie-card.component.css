@@ -16,13 +16,15 @@
 
 /* Contenedor de la imagen */
 .contenedorImg {
-    height: 413px;
+    height: fit-content;
+    height: 400px;
 }
 
 
 .contenedorImg img {
     max-width: 100%;
-    height: auto;
+    height: 400px;
+    object-fit: cover;
     border-radius: 6px;
     cursor: pointer;
 }
@@ -40,9 +42,24 @@
     color: white;
 }
 
+.titol {
+    font-size: 17px;
+    font-weight: bold;
+    height: 50px;
+}
+
 .text {
     height: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: justify;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+}
+
+p {
+    font-size: 15px;
 }

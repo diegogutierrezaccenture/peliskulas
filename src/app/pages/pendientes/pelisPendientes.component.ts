@@ -6,13 +6,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { MovieCardComponent } from "../../components/movie-card/movie-card.component";
-import { MovieService } from '../../core/services/movie.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ListasPelis } from "../../core/services/listas.service";
-
-// import { MatDialog } from '@angular/material/dialog';
-// import { MovieDetailsComponent } from '../../components/movie-details/movie-details.component';
-// import { MovieModalService } from '../../core/services/movie-modal.service';
 
 @Component({
   standalone: true,
