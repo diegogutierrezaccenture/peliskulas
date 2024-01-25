@@ -51,7 +51,7 @@
 
     <!-- Barra de busqueda -->
     <div class="searchBar">
-        <form (submit)="search(true)">
+        <form (submit)="search()">
             <input type="text" [formControl]="searchControl" name="searchQuery" placeholder="Buscar películas">
             <button class="searchButton" mat-flat-button color="accent" type="submit">Buscar</button>
         </form>
