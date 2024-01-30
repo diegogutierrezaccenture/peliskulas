@@ -20,7 +20,9 @@
                 <ng-template #noGenres>No hay información.</ng-template>
             </span>
         </p>
-        <iframe [src]="getSafeUrl(movieDetails)" frameborder="0" allowfullscreen></iframe>
+        <div *ngIf="movieDetails.movieTrailers.results.length > 0">
+            <iframe [src]="getSafeUrl(movieDetails)" frameborder="0" allowfullscreen></iframe>
+        </div>
     </div>
 
 </div>
