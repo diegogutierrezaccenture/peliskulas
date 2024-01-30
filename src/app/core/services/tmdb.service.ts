@@ -53,6 +53,10 @@ export class TmdbService {
     );
   }
 
+  getTrailer(movieId: number): Observable<any> {
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?language=es-ES&api_key=${this.apiKey}`
+    return this.http.get(url);
+  }
 
   searchMovies(query: string): Observable<any> {
     const url = `https://api.themoviedb.org/3/search/movie?language=es-ES&api_key=${this.apiKey}&query=${query}`;

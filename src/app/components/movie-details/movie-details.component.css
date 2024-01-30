@@ -25,9 +25,8 @@ img {
 
 .contenido {
     width: 100%;
-    /* Ocupa el ancho completo del contenedor padre */
-    margin-top: 10px;
-    /* Ajuste de margen para separar el contenido de la imagen */
+    margin: 10px;
+    height: fit-content;
 }
 
 .titulo {
@@ -50,12 +49,20 @@ img {
     margin-bottom: 16px;
 }
 
-@media screen and (max-width:700px) {
+iframe {
+    width: 100%; /* Hacer que el iframe ocupe el 100% del contenedor */
+    height: 100%; /* Hacer que el iframe ocupe el 100% del contenedor */
+    margin: auto; /* Alinear en el centro vertical y horizontal */
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    box-shadow: 1px 1px 13px rgba(0, 0, 0, 0.104);
+}
+
+@media screen and (max-width: 700px) {
     .movie-details {
         flex-direction: column;
         align-items: center;
         padding: 10px;
-        align-items: center;
     }
 
     .titulo {
@@ -74,5 +81,10 @@ img {
 
     img {
         width: 150px;
+    }
+
+    iframe {
+        width: 100%; /* Hacer que el iframe ocupe el 100% del contenedor */
+        height: 150px;
     }
 }

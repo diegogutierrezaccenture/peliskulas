@@ -37,14 +37,15 @@ export class MovieCardComponent {
     // Realiza ambas llamadas a la API simultáneamente
     forkJoin([
       this.obtenerDetallesDePelicula(movie.id),
-      this.obtenerDirector(movie.id)
+      this.obtenerDirector(movie.id),
+      this.obtenerTrailer(movie.id)
     ]).subscribe(
-      ([movieDetails, movieCredits]: [any, any]) => {
+      ([movieDetails, movieCredits, movieTrailers]: [any, any, any]) => {
         // Combina los detalles de la película y los créditos en un solo objeto
-        const movieData = { ...movieDetails, mainDirector: movieCredits };
+        const movieData = { ...movieDetails, mainDirector: movieCredits, movieTrailers };
         // Llama al servicio para pasar la información de la película al componente de detalles
         this.movieModalService.openModal(movieData);
-
+        console.log(movieData)
         // Abre el componente de detalles utilizando MatDialog
         this.dialog.open(MovieDetailsComponent);
       },
@@ -60,6 +61,10 @@ export class MovieCardComponent {
 
   obtenerDirector(movieId: number): Observable<any> {
     return this.tmdbService.getMainDirector(movieId);
+  }
+
+  obtenerTrailer(movieId: number): Observable<any> {
+    return this.tmdbService.getTrailer(movieId);
   }
 
   confirmDelete(movie: any): void {
